@@ -1,0 +1,78 @@
+version: "3.9"
+
+x-environment: &default-environment
+  env_file:
+    - .env
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    <<: *default-environment
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h ${DB_HOST} -p ${DB_PORT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: ${ENVIRONMENT:-production}
+    container_name: rag_chatbot_web
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    restart: on-failure
+    <<: *default-environment
+    volumes:
+      - ./src:/app/src:ro
+      - ./alembic:/app/alembic:ro
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request,sys; urllib.request.urlopen(\"http://${API_HOST}:${API_PORT}/healthcheck\"); sys.exit(0)' || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:7
+    container_name: pgadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+    <<: *default-environment
+    ports:
+      - "${PGADMIN_PORT}:${PGADMIN_DOCKER_PORT}"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f ${PGADMIN_HOST}:${PGADMIN_DOCKER_PORT} || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  chroma:
+    image: chromadb/chroma
+    container_name: chroma_vector_db
+    restart: unless-stopped
+    ports:
+      - "${CHROMA_PORT}:${CHROMA_DOCKER_PORT}"
+    volumes:
+      - chroma-data:/chroma/chroma
+
+
+  
+
+volumes:
+  db-data:
+  chroma-data:
+  pgadmin-data:
