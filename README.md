@@ -1,2 +1,2 @@
 # Rag-Chatbot
-A chatbot microserive with RAG Implementation
+A chatbot microservice with RAG Implementation
