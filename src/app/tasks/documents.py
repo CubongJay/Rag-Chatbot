@@ -9,7 +9,7 @@ from app.infrastructure.repositories.document_repository_sqlalchemy import (
 from app.infrastructure.repositories.document_chunk_repository_sqlalchemy import (
     DbDocumentChunkRepository,
 )
-from app.infrastructure.llm import OpenAIService
+from app.infrastructure.llm.openai_service import OpenAIService
 from app.infrastructure.utils import text_splitter
 
 

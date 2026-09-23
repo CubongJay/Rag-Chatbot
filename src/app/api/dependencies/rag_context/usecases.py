@@ -27,7 +27,8 @@
 #     return CreateContextUsecase(vector_repo)
 from fastapi import Depends
 
-from app.config.database import get_async_db
+from app.infrastructure.db.session import get_async_db
+        
 from app.infrastructure.repositories.document_repository_sqlalchemy import (
     DbDocumentRepository,
 )

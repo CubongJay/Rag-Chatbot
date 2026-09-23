@@ -47,9 +47,10 @@ router = APIRouter()
 
 @router.post("/documents/upload", status_code=status.HTTP_201_CREATED)
 async def upload_document(
+    handler: UploadDocumentHandler,
     session_id: UUID,
     file: UploadFile = File(...),
-    handler: UploadDocumentHandler = Depends(),
+   
 ):
     allowed = {".txt", ".pdf"}
     ext = os.path.splitext(file.filename)[1].lower()
@@ -68,6 +69,6 @@ async def upload_document(
 @router.get("/documents/status/{document_id}", status_code=status.HTTP_200_OK)
 async def get_document_status(
     document_id: UUID,
-    handler: GetDocumentStatusHandler = Depends(),
+    handler: GetDocumentStatusHandler 
 ):
     return await handler(document_id)

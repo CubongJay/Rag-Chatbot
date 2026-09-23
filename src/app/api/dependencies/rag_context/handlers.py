@@ -5,7 +5,7 @@ from uuid import UUID
 
 from fastapi import Depends, BackgroundTasks
 
-from app.api.dependencies.rag_context.usecases import upload_document_usecase
+from app.api.dependencies.rag_context.usecases import upload_document_usecase, get_document_status_usecase
 from app.usecases.get_document_status import GetDocumentStatusUseCase
 from app.usecases.upload_document import (
     UploadDocumentUseCase,
