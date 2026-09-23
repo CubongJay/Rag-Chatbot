@@ -44,6 +44,7 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 RUN chown -R appuser:appuser /app
+RUN mkdir -p /app/uploads && chown -R appuser:appuser /app/uploads
 USER appuser
 
 COPY alembic.ini ./
