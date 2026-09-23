@@ -1,4 +1,6 @@
-version: "3.9"
+# version: "3.9"
+include:
+  - docker-compose.langfuse.yml
 
 x-environment: &default-environment
   env_file:
@@ -6,14 +8,16 @@ x-environment: &default-environment
 
 services:
   db:
-    image: postgres:15-alpine
+    # image: postgres:15-alpine
+    image: pgvector/pgvector:pg15
     container_name: postgres_db
     restart: always
     <<: *default-environment
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-      - "${DB_PORT}:${DB_PORT}"
+      # - "${DB_PORT}:${DB_PORT}"
+      - "5433:${DB_PORT}"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h ${DB_HOST} -p ${DB_PORT}"]
       interval: 10s
@@ -36,7 +40,7 @@ services:
     <<: *default-environment
     volumes:
       - ./src:/app/src:ro
-      - ./alembic:/app/alembic:ro
+      - ./alembic:/app/alembic
     healthcheck:
       test: ["CMD-SHELL", "python -c 'import urllib.request,sys; urllib.request.urlopen(\"http://${API_HOST}:${API_PORT}/healthcheck\"); sys.exit(0)' || exit 1"]
       interval: 10s

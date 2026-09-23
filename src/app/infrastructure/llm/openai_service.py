@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 from app.config.settings import get_settings
 from app.domain.interfaces.llm_service import LLMService
@@ -31,6 +31,27 @@ class OpenAIService(LLMService):
             raise ExternalServiceError(
                 "OpenAI", f"Failed to initialize: {str(e)}"
             )
+
+        try:
+            self.embeddings = OpenAIEmbeddings(
+                model="text-embedding-3-small",
+                openai_api_key=settings.openai_api_key,
+            )
+
+        except Exception as e:
+                    raise ExternalServiceError(
+                        "OpenAI", f"Failed to initialize: {str(e)}"
+                    )
+
+  
+
+    async def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        """Generate embeddings for a list of texts (async)."""
+        return await self.embeddings.aembed_documents(texts)
+
+    async def embed_query(self, text: str) -> List[float]:
+        """Generate an embedding for a single query (async)."""
+        return await self.embeddings.aembed_query(text)
 
     def generate_response(
         self,
