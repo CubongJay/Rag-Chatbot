@@ -24,10 +24,10 @@ async def process_document_task(document_id: UUID, file_path: str, session_id: U
         llm = OpenAIService()
 
         try:
-            # 1. Mark as PROCESSING
+           
             await repo.update_status(document_id, DocumentStatus.PROCESSING)
 
-            # 2. Extract text
+          
             file_ext = os.path.splitext(file_path)[1].lower()
             if file_ext == ".pdf":
                 import pypdf
@@ -37,12 +37,12 @@ async def process_document_task(document_id: UUID, file_path: str, session_id: U
                 with open(file_path, "r", encoding="utf-8") as f:
                     raw_text = f.read()
 
-            # 3. Chunk
+          
             chunks = text_splitter.split_text_into_documents(raw_text)
             if not chunks:
                 raise ValueError("No text extracted from file")
 
-            # 4. Convert to DocumentChunk domain entities
+          
             chunk_entities = [
                 DocumentChunk(
                     content=c.content,
@@ -55,12 +55,12 @@ async def process_document_task(document_id: UUID, file_path: str, session_id: U
                 for i, c in enumerate(chunks)
             ]
 
-            # 5. Generate embeddings
+          
             embeddings = await llm.embed_documents(
                 [c.content for c in chunk_entities]
             )
 
-            # 6. Store chunks
+            
             await chunk_repo.add_chunks(
                 document_id=document_id,
                 session_id=session_id,
@@ -68,11 +68,11 @@ async def process_document_task(document_id: UUID, file_path: str, session_id: U
                 embeddings=embeddings,
             )
 
-            # 7. Clean up file
+          
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-            # 8. Mark as SUCCESS
+            
             await repo.update_status(
                 document_id,
                 DocumentStatus.SUCCESS,

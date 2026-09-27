@@ -9,9 +9,7 @@ from app.infrastructure.repositories.message_repository_sqlalchemy import (
 from app.infrastructure.repositories.session_repository_sqlalchemy import (
     DbSessionRepository,
 )
-from app.infrastructure.repositories.vector_store import (
-    DbVectorStoreRepository,
-)
+from app.infrastructure.repositories.document_chunk_repository_sqlalchemy import DbDocumentChunkRepository
 from app.usecases.create_message import CreateMessageUseCase
 from app.usecases.delete_message import DeleteMessageUseCase
 from app.usecases.generate_ai_response import GenerateAIResponseUseCase
@@ -33,11 +31,8 @@ async def get_session_repository(
     return DbSessionRepository(db)
 
 
-async def get_vector_repository() -> DbVectorStoreRepository:
-    """Shared dependency provider for DbVectorStoreRepository."""
-    return DbVectorStoreRepository()
-
-
+async def get_document_repository(db: AsyncSession = Depends(get_async_db),) -> DbDocumentChunkRepository:
+    return DbDocumentChunkRepository(db)
 async def create_message_usecase(
     message_repo: DbMessageRepository = Depends(get_message_repository),
     session_repo: DbSessionRepository = Depends(get_session_repository),
@@ -49,12 +44,13 @@ async def create_message_usecase(
 async def generate_ai_response_usecase(
     message_repo: DbMessageRepository = Depends(get_message_repository),
     session_repo: DbSessionRepository = Depends(get_session_repository),
-    vector_repo: DbVectorStoreRepository = Depends(get_vector_repository),
+
+    chunk_repo: DbDocumentChunkRepository = Depends(get_document_repository),
 ) -> GenerateAIResponseUseCase:
     """Dependency provider for GenerateAIResponseUseCase."""
     llm_service = OpenAIService()
     return GenerateAIResponseUseCase(
-        message_repo, session_repo, llm_service, vector_repo
+        message_repo, session_repo, llm_service, chunk_repo
     )
 
 

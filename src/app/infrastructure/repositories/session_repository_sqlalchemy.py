@@ -123,4 +123,6 @@ class DbSessionRepository(SessionRepository):
             id=db_session.id,
             title=db_session.title,
             is_favorite=db_session.is_favorite,
+            created_at=db_session.created_at,
+            updated_at=db_session.updated_at
         )

@@ -57,6 +57,16 @@ class DbDocumentChunkRepository(DocumentChunkRepository):
         db_chunks = result.scalars().all()
         return [self._to_domain_entity(c) for c in db_chunks]
 
+    async def retrieve_similar_chunks(self, session_id: UUID, query_embedding: List[float], k: int = 5) -> List[DocumentChunk]:
+        stmt = (
+            select(DocumentChunkModel)
+            .where(DocumentChunkModel.session_id == session_id)
+            .order_by(DocumentChunkModel.embedding.l2_distance(query_embedding))
+            .limit(k)
+        )
+        result = await self.db_session.execute(stmt)
+        return [self._to_domain_entity(c) for c in result.scalars().all()]
+
     def _to_domain_entity(self, db_chunk: DocumentChunkModel) -> DocumentChunk:
         return DocumentChunk(
             content=db_chunk.content,

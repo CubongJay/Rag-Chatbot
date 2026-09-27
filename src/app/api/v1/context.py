@@ -41,10 +41,12 @@ from uuid import UUID
 import os
 
 from app.api.dependencies.rag_context.handlers import UploadDocumentHandler, GetDocumentStatusHandler
+from app.config.settings import get_settings
 
-router = APIRouter()
+# router = APIRouter()
 
-
+router = APIRouter(prefix="/rag-context", tags=["rag-context"])
+settings = get_settings()
 @router.post("/documents/upload", status_code=status.HTTP_201_CREATED)
 async def upload_document(
     handler: UploadDocumentHandler,
@@ -57,13 +59,14 @@ async def upload_document(
     if ext not in allowed:
         raise HTTPException(400, f"Only {', '.join(allowed)} files supported")
 
-    content = await file.read()
+  
     try:
-        text = content.decode("utf-8")
+        # text = content.decode("utf-8")
+          content = await file.read()
     except UnicodeDecodeError:
         raise HTTPException(400, "File must be valid UTF-8 text")
 
-    return await handler(text, file.filename, session_id)
+    return await handler(content, file.filename, session_id)
 
 
 @router.get("/documents/status/{document_id}", status_code=status.HTTP_200_OK)

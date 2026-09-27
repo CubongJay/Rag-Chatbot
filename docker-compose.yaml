@@ -1,6 +1,6 @@
 # version: "3.9"
-include:
-  - docker-compose.langfuse.yml
+# include:
+#   - docker-compose.langfuse.yml
 
 x-environment: &default-environment
   env_file:
@@ -63,20 +63,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  
-  chroma:
-    image: chromadb/chroma
-    container_name: chroma_vector_db
-    restart: unless-stopped
-    ports:
-      - "${CHROMA_PORT}:${CHROMA_DOCKER_PORT}"
-    volumes:
-      - chroma-data:/chroma/chroma
-
-
-  
+   
 
 volumes:
   db-data:
-  chroma-data:
   pgadmin-data:

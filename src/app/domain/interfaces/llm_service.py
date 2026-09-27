@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
+from typing import List
 
 
 class LLMService(ABC):
     """Abstract interface for LLM service."""
 
     @abstractmethod
-    def generate_response(self, message: str, conversation_history: list = None) -> str:
+    async def generate_response(self, message: str, conversation_history: list = None) -> str:
         """
         Generate a response from the LLM based on user input.
 
@@ -20,3 +21,8 @@ class LLMService(ABC):
             ExternalServiceError: If the LLM service fails
         """
         pass
+
+    @abstractmethod
+    async def embed_query(self, text: str) -> List[float]:
+            """Generate an embedding for a single query (async)."""
+            pass

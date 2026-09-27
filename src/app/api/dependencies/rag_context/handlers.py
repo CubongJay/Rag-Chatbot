@@ -3,7 +3,7 @@
 from typing import Annotated, Awaitable,Callable
 from uuid import UUID
 
-from fastapi import Depends, BackgroundTasks
+from fastapi import Depends, BackgroundTasks, HTTPException
 
 from app.api.dependencies.rag_context.usecases import upload_document_usecase, get_document_status_usecase
 from app.usecases.get_document_status import GetDocumentStatusUseCase
@@ -17,11 +17,11 @@ from app.tasks.documents import process_document_task
 async def upload_document_handler(
     use_case: UploadDocumentUseCase = Depends(upload_document_usecase),
     background_tasks: BackgroundTasks = None,
-) -> Callable[[str, str, UUID], UploadDocumentResponse]:
+) -> Callable[[bytes, str, UUID], UploadDocumentResponse]:
     """Dependency provider that returns the handler function."""
 
     async def handler(
-        file_content: str, file_name: str, session_id: UUID
+        file_content: bytes, file_name: str, session_id: UUID
     ) -> UploadDocumentResponse:
         # Execute use case
         result = await use_case.execute(
@@ -71,6 +71,6 @@ GetDocumentStatusHandler = Annotated[
 
 
 UploadDocumentHandler = Annotated[
-    Callable[[str, str, UUID], UploadDocumentResponse],
+    Callable[[bytes, str, UUID], UploadDocumentResponse],
     Depends(upload_document_handler),
 ]

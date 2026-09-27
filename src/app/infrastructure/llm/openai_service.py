@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langfuse.langchain import CallbackHandler
 
 from app.config.settings import get_settings
 from app.domain.interfaces.llm_service import LLMService
@@ -19,6 +20,7 @@ class OpenAIService(LLMService):
             raise ValueError(
                 "OPENAI_API_KEY is not set in environment variables"
             )
+        self.langfuse_handler = CallbackHandler()
 
         try:
             self.llm = ChatOpenAI(
@@ -53,7 +55,7 @@ class OpenAIService(LLMService):
         """Generate an embedding for a single query (async)."""
         return await self.embeddings.aembed_query(text)
 
-    def generate_response(
+    async def generate_response(
         self,
         message: str,
         conversation_history: Optional[List] = None,
@@ -78,9 +80,16 @@ class OpenAIService(LLMService):
             ]
 
             if context:
+              
                 messages.append(
-                    SystemMessage(content=f"Use this context: {context}")
-                )
+                        SystemMessage(
+                            content=(
+                                "Answer the user's question using ONLY the following context. "
+                                "If the answer is not in the context, say you don't know.\n\n"
+                                f"Context:\n{context}"
+                            )
+                        )
+                    )
 
             if conversation_history:
                 for msg in conversation_history:
@@ -95,7 +104,8 @@ class OpenAIService(LLMService):
 
             messages.append(HumanMessage(content=message))
 
-            response = self.llm.invoke(messages)
+            response = await self.llm.ainvoke(messages,
+                                       config={"callbacks": [self.langfuse_handler]})
             return response.content.strip()
 
         except Exception as e:
