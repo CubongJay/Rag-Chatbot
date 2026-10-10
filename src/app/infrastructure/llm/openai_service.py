@@ -91,6 +91,17 @@ class OpenAIService(LLMService):
                         )
                     )
 
+            else:
+                messages.append(
+                    SystemMessage(
+                        content=(
+                            "You are a helpful assistant. Respond to the user's message "
+                            "using the conversation history for context. Do not claim to have "
+                            "information from documents you have not been given."
+                        )
+                    )
+                )
+
             if conversation_history:
                 for msg in conversation_history:
                     if msg.get("role") == "user":
@@ -112,3 +123,56 @@ class OpenAIService(LLMService):
             raise ExternalServiceError(
                 "OpenAI", f"Failed to generate response: {str(e)}"
             )
+    async def classify_query(self, user_message: str) -> str:
+        try:
+            messages = [
+                SystemMessage(content=(
+                    "You are a classifier. Categorize the user's message into one of two categories:\n\n"
+                    "- 'document': the message asks about facts, topics, or content that might be in an uploaded document. "
+                    "Examples: 'What is X?', 'How many Y?', 'Explain Z.'\n"
+                    "- 'conversational': greetings, thanks, meta-questions about the conversation, or anything that doesn't need document lookup. "
+                    "Examples: 'Hello', 'Thanks', 'What did you just say?'\n\n"
+                    "Respond with exactly one word: 'document' or 'conversational'."
+                )),
+                HumanMessage(content=user_message),
+            ]
+
+            response = await self.llm.ainvoke(
+                messages,
+                config={"callbacks": [self.langfuse_handler]},
+            )
+
+            result = response.content.strip().lower()
+            if "document" in result:
+                return "document"
+            return "conversational"
+
+        except Exception as e:
+            raise ExternalServiceError(
+                "OpenAI", f"Failed to classify query: {str(e)}"
+            )
+    async def summarize_document(self, document_content: str) -> str:
+        try:
+            messages = [
+                SystemMessage(content=(
+                    "You are a helpful assistant. "
+                    "Summarize the document content into 2-4 sentences "
+                    "that accurately describe what the document is about. "
+                    "Include key entities such as names, dates, amounts, "
+                    "and topics covered."
+                )),
+                HumanMessage(content=document_content),
+            ]
+
+            response = await self.llm.ainvoke(
+                messages,
+                config={"callbacks": [self.langfuse_handler]},
+            )
+            return response.content.strip()
+
+        except Exception as e:
+            raise ExternalServiceError(
+                "OpenAI", f"Failed to summarize the document: {str(e)}"
+            )
+
+            

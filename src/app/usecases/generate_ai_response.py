@@ -71,32 +71,53 @@ class GenerateAIResponseUseCase:
                 for msg in history_messages[-10:]
             ]
         
-            embedded_message = await self.llm_service.embed_query(
-                user_message_content
-            )
-
 
             with self.langfuse.start_as_current_observation(
-                name="retrieve_chunks",
+                name="classify_query",
                 input=user_message_content,
-                as_type="retriever",
-            ) as span:
-                retrieved_docs = await self.document_repo.retrieve_similar_chunks(
-                    session_id=session_id,
-                    query_embedding=embedded_message,
-                    k=3,
-                )
-                span.update(
-                    output=[c.content for c in retrieved_docs],
-                    metadata={"chunks_found": len(retrieved_docs)},
-                )
+                as_type="span"
 
-            combined_context =  "\n\n".join(c.content for c in retrieved_docs)
-            ai_response_content = await self.llm_service.generate_response(
-                user_message_content,
-                conversation_history,
-                context=combined_context,
-            )
+            ) as span:
+                
+                query_classification = await self.llm_service.classify_query(user_message_content)
+                span.update(
+                                        output=query_classification
+                
+                                    )
+            if query_classification == "document":
+
+                embedded_message = await self.llm_service.embed_query(
+                        user_message_content
+                    )
+
+
+                with self.langfuse.start_as_current_observation(
+                        name="retrieve_chunks",
+                        input=user_message_content,
+                        as_type="retriever",
+                    ) as retrieved_span:
+                        retrieved_docs = await self.document_repo.retrieve_similar_chunks(
+                            session_id=session_id,
+                            query_embedding=embedded_message,
+                            k=3,
+                        )
+                        retrieved_span.update(
+                            output=[c.content for c in retrieved_docs],
+                            metadata={"chunks_found": len(retrieved_docs)},
+                        )
+
+                combined_context =  "\n\n".join(c.content for c in retrieved_docs)
+                ai_response_content = await self.llm_service.generate_response(
+                        user_message_content,
+                        conversation_history,
+                        context=combined_context,
+                    )
+            else:
+                    ai_response_content = await self.llm_service.generate_response(
+                        user_message_content,
+                        conversation_history
+                    )
+                
 
             ai_message = Message(session_id=session_id)
             ai_message.set_sender("assistant")
