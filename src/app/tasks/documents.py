@@ -4,10 +4,12 @@ from uuid import UUID
 from app.config.database import get_async_database_session
 from app.domain.entities.document import DocumentChunk, DocumentStatus
 from app.infrastructure.llm.openai_service import OpenAIService
-from app.infrastructure.repositories.document_chunk_repository_sqlalchemy import \
-    DbDocumentChunkRepository
-from app.infrastructure.repositories.document_repository_sqlalchemy import \
-    DbDocumentRepository
+from app.infrastructure.repositories.document_chunk_repository_sqlalchemy import (
+    DbDocumentChunkRepository,
+)
+from app.infrastructure.repositories.document_repository_sqlalchemy import (
+    DbDocumentRepository,
+)
 from app.infrastructure.utils import text_splitter
 
 

@@ -32,8 +32,10 @@ with patch.dict(
 
     from app.main import app
     from app.schemas.pagination import PaginatedResponse, PaginationMeta
-    from app.schemas.session.responses import (SessionCreateResponse,
-                                               SessionResponse)
+    from app.schemas.session.responses import (
+        SessionCreateResponse,
+        SessionResponse,
+    )
 
 
 class TestSessionsAPISimple:

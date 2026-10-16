@@ -6,11 +6,15 @@ from uuid import UUID
 from fastapi import BackgroundTasks, Depends, HTTPException
 
 from app.api.dependencies.rag_context.usecases import (
-    get_document_status_usecase, upload_document_usecase)
+    get_document_status_usecase,
+    upload_document_usecase,
+)
 from app.tasks.documents import process_document_task
 from app.usecases.get_document_status import GetDocumentStatusUseCase
-from app.usecases.upload_document import (UploadDocumentResponse,
-                                          UploadDocumentUseCase)
+from app.usecases.upload_document import (
+    UploadDocumentResponse,
+    UploadDocumentUseCase,
+)
 
 
 async def upload_document_handler(

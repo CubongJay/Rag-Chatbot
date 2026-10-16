@@ -6,17 +6,23 @@ from fastapi import Depends
 from app.errors.errors import SessionNotFoundError
 from app.schemas.pagination import PaginatedResponse, PaginationMeta
 from app.schemas.session.requests import SessionUpdate
-from app.schemas.session.responses import (SessionCreateResponse,
-                                           SessionResponse)
+from app.schemas.session.responses import (
+    SessionCreateResponse,
+    SessionResponse,
+)
 from app.usecases.create_session import CreateSessionUseCase
 from app.usecases.delete_session import DeleteSessionUseCase
 from app.usecases.get_session import GetSessionUseCase
 from app.usecases.get_sessions import GetSessionsUseCase
 from app.usecases.update_session import UpdateSessionUseCase
 
-from .usecases import (create_session_usecase, delete_session_usecase,
-                       get_session_usecase, get_sessions_usecase,
-                       update_session_usecase)
+from .usecases import (
+    create_session_usecase,
+    delete_session_usecase,
+    get_session_usecase,
+    get_sessions_usecase,
+    update_session_usecase,
+)
 
 
 async def create_session_handler(

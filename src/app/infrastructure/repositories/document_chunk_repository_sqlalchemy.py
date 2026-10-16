@@ -5,8 +5,9 @@ from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.entities.document import DocumentChunk
-from app.domain.interfaces.document_chunk_repository import \
-    DocumentChunkRepository
+from app.domain.interfaces.document_chunk_repository import (
+    DocumentChunkRepository,
+)
 from app.infrastructure.db.models import DocumentChunk as DocumentChunkModel
 
 

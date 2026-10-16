@@ -3,10 +3,12 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
 
-from app.api.dependencies.message.handlers import (CreateMessageHandler,
-                                                   DeleteMessageHandler,
-                                                   GetMessageHandler,
-                                                   GetMessagesHandler)
+from app.api.dependencies.message.handlers import (
+    CreateMessageHandler,
+    DeleteMessageHandler,
+    GetMessageHandler,
+    GetMessagesHandler,
+)
 from app.schemas.message.requests import MessageCreateRequest
 from app.schemas.message.responses import MessagePairResponse, MessageResponse
 from app.schemas.pagination import PaginatedResponse

@@ -28,8 +28,9 @@
 from fastapi import Depends
 
 from app.infrastructure.db.session import get_async_db
-from app.infrastructure.repositories.document_repository_sqlalchemy import \
-    DbDocumentRepository
+from app.infrastructure.repositories.document_repository_sqlalchemy import (
+    DbDocumentRepository,
+)
 from app.usecases.get_document_status import GetDocumentStatusUseCase
 from app.usecases.upload_document import UploadDocumentUseCase
 

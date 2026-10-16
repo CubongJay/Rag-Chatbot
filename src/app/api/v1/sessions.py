@@ -3,15 +3,19 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
 
-from app.api.dependencies.session.handlers import (CreateSessionHandler,
-                                                   DeleteSessionHandler,
-                                                   GetSessionHandler,
-                                                   GetSessionsHandler,
-                                                   UpdateSessionHandler)
+from app.api.dependencies.session.handlers import (
+    CreateSessionHandler,
+    DeleteSessionHandler,
+    GetSessionHandler,
+    GetSessionsHandler,
+    UpdateSessionHandler,
+)
 from app.schemas.pagination import PaginatedResponse
 from app.schemas.session.requests import SessionCreate, SessionUpdate
-from app.schemas.session.responses import (SessionCreateResponse,
-                                           SessionResponse)
+from app.schemas.session.responses import (
+    SessionCreateResponse,
+    SessionResponse,
+)
 from app.security.auth import verify_api_key
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])

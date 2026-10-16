@@ -2,10 +2,12 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infrastructure.db.session import get_async_db
-from app.infrastructure.repositories.message_repository_sqlalchemy import \
-    DbMessageRepository
-from app.infrastructure.repositories.session_repository_sqlalchemy import \
-    DbSessionRepository
+from app.infrastructure.repositories.message_repository_sqlalchemy import (
+    DbMessageRepository,
+)
+from app.infrastructure.repositories.session_repository_sqlalchemy import (
+    DbSessionRepository,
+)
 from app.usecases.create_session import CreateSessionUseCase
 from app.usecases.delete_session import DeleteSessionUseCase
 from app.usecases.get_session import GetSessionUseCase

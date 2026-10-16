@@ -6,8 +6,9 @@ from langfuse.langchain import CallbackHandler
 
 from app.config.settings import get_settings
 from app.domain.entities.message import Message, MessageType
-from app.domain.interfaces.document_chunk_repository import \
-    DocumentChunkRepository
+from app.domain.interfaces.document_chunk_repository import (
+    DocumentChunkRepository,
+)
 from app.domain.interfaces.llm_service import LLMService
 from app.domain.interfaces.message_repository import MessageRepository
 from app.domain.interfaces.session_repository import SessionRepository

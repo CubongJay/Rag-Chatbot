@@ -33,8 +33,10 @@ with patch.dict(
 
     from app.domain.entities.message import Message, MessageType
     from app.main import app
-    from app.schemas.message.responses import (MessagePairResponse,
-                                               MessageResponse)
+    from app.schemas.message.responses import (
+        MessagePairResponse,
+        MessageResponse,
+    )
     from app.schemas.pagination import PaginatedResponse
 
 

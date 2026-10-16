@@ -3,12 +3,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infrastructure.db.session import get_async_db
 from app.infrastructure.llm.openai_service import OpenAIService
-from app.infrastructure.repositories.document_chunk_repository_sqlalchemy import \
-    DbDocumentChunkRepository
-from app.infrastructure.repositories.message_repository_sqlalchemy import \
-    DbMessageRepository
-from app.infrastructure.repositories.session_repository_sqlalchemy import \
-    DbSessionRepository
+from app.infrastructure.repositories.document_chunk_repository_sqlalchemy import (
+    DbDocumentChunkRepository,
+)
+from app.infrastructure.repositories.message_repository_sqlalchemy import (
+    DbMessageRepository,
+)
+from app.infrastructure.repositories.session_repository_sqlalchemy import (
+    DbSessionRepository,
+)
 from app.usecases.create_message import CreateMessageUseCase
 from app.usecases.delete_message import DeleteMessageUseCase
 from app.usecases.generate_ai_response import GenerateAIResponseUseCase

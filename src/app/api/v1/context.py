@@ -42,7 +42,9 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 
 from app.api.dependencies.rag_context.handlers import (
-    GetDocumentStatusHandler, UploadDocumentHandler)
+    GetDocumentStatusHandler,
+    UploadDocumentHandler,
+)
 from app.config.settings import get_settings
 
 # router = APIRouter()
