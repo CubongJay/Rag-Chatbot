@@ -1,0 +1,29 @@
+name: Backend Ci
+
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: Setup Python
+        run: uv python install 3.13
+      - name: Install Dependencies
+        run: uv sync --frozen
+      - name: Run black
+        run: uv run black --check src/
+      - name: Run isort
+        run: uv run isort --check src/
+      - name: Run Tests
+        run: PYTHONPATH=./src uv run pytest -v
