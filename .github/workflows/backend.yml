@@ -1,4 +1,4 @@
-name: Backend Ci
+name: Backend CI
 
 
 on:
@@ -21,9 +21,10 @@ jobs:
         run: uv python install 3.13
       - name: Install Dependencies
         run: uv sync --frozen
-      - name: Run black
-        run: uv run black --check src/
+    
       - name: Run isort
         run: uv run isort --check src/
+      - name: Run black
+        run: uv run black --check src/
       - name: Run Tests
         run: PYTHONPATH=./src uv run pytest -v
