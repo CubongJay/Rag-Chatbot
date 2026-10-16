@@ -27,7 +27,10 @@ class GetSessionsUseCase:
         return await self.session_repo.get_all(page=page, size=size)
 
     async def execute_by_favorite(
-        self, is_favorite: bool, page: Optional[int] = None, size: Optional[int] = None
+        self,
+        is_favorite: bool,
+        page: Optional[int] = None,
+        size: Optional[int] = None,
     ) -> List[Session]:
         """
         Retrieve sessions filtered by favorite status with optional pagination.
@@ -45,7 +48,10 @@ class GetSessionsUseCase:
         )
 
     async def execute_with_pagination(
-        self, limit: int = 50, offset: int = 0, is_favorite: Optional[bool] = None
+        self,
+        limit: int = 50,
+        offset: int = 0,
+        is_favorite: Optional[bool] = None,
     ) -> List[Session]:
         """
         Retrieve sessions with pagination support.
@@ -90,4 +96,6 @@ class GetSessionsUseCase:
         #     sessions = self.session_repo.get_all()
 
         # return len(sessions)
-        return await self.session_repo.get_sessions_count(is_favorite=is_favorite)
+        return await self.session_repo.get_sessions_count(
+            is_favorite=is_favorite
+        )

@@ -47,7 +47,10 @@ class DbMessageRepository(MessageRepository):
         return self._to_domain_entity(db_message)
 
     async def get_by_session_id(
-        self, session_id: UUID, page: Optional[int] = None, size: Optional[int] = None
+        self,
+        session_id: UUID,
+        page: Optional[int] = None,
+        size: Optional[int] = None,
     ) -> List[Message]:
         """Retrieve all messages for a specific session with optional pagination."""
 

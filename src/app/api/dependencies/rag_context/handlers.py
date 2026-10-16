@@ -1,17 +1,16 @@
-# 
+#
 
-from typing import Annotated, Awaitable,Callable
+from typing import Annotated, Awaitable, Callable
 from uuid import UUID
 
-from fastapi import Depends, BackgroundTasks, HTTPException
+from fastapi import BackgroundTasks, Depends, HTTPException
 
-from app.api.dependencies.rag_context.usecases import upload_document_usecase, get_document_status_usecase
-from app.usecases.get_document_status import GetDocumentStatusUseCase
-from app.usecases.upload_document import (
-    UploadDocumentUseCase,
-    UploadDocumentResponse,
-)
+from app.api.dependencies.rag_context.usecases import (
+    get_document_status_usecase, upload_document_usecase)
 from app.tasks.documents import process_document_task
+from app.usecases.get_document_status import GetDocumentStatusUseCase
+from app.usecases.upload_document import (UploadDocumentResponse,
+                                          UploadDocumentUseCase)
 
 
 async def upload_document_handler(
@@ -41,6 +40,7 @@ async def upload_document_handler(
         return result
 
     return handler
+
 
 async def get_document_status_handler(
     use_case: GetDocumentStatusUseCase = Depends(get_document_status_usecase),

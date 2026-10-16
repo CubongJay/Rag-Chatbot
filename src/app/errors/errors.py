@@ -34,7 +34,9 @@ class BaseAPIException(HTTPException):
 class ValidationError(BaseAPIException):
     """Validation error with detailed field information."""
 
-    def __init__(self, detail: str, field_errors: Optional[Dict[str, str]] = None):
+    def __init__(
+        self, detail: str, field_errors: Optional[Dict[str, str]] = None
+    ):
         super().__init__(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=detail,

@@ -1,6 +1,7 @@
 import logging
 import time
 from collections import defaultdict, deque
+
 from fastapi import Request
 
 from app.config.settings import get_settings
@@ -25,7 +26,10 @@ class RateLimiter:
         cutoff_time = current_time - self.settings.rate_limit_window
         for api_key in list(self.requests.keys()):
 
-            while self.requests[api_key] and self.requests[api_key][0] < cutoff_time:
+            while (
+                self.requests[api_key]
+                and self.requests[api_key][0] < cutoff_time
+            ):
                 self.requests[api_key].popleft()
 
             if not self.requests[api_key]:
@@ -37,7 +41,9 @@ class RateLimiter:
         """Check if API key has exceeded rate limit."""
         cutoff_time = current_time - self.settings.rate_limit_window
 
-        while self.requests[api_key] and self.requests[api_key][0] < cutoff_time:
+        while (
+            self.requests[api_key] and self.requests[api_key][0] < cutoff_time
+        ):
             self.requests[api_key].popleft()
 
         return len(self.requests[api_key]) >= self.settings.rate_limit_requests
@@ -60,9 +66,12 @@ class RateLimiter:
         self._cleanup_old_requests(current_time)
 
         if self._is_rate_limited(api_key, current_time):
-            logger.warning(f"Rate limit exceeded for API key: {api_key[:8]}...")
+            logger.warning(
+                f"Rate limit exceeded for API key: {api_key[:8]}..."
+            )
             raise RateLimitError(
-                self.settings.rate_limit_requests, self.settings.rate_limit_window
+                self.settings.rate_limit_requests,
+                self.settings.rate_limit_window,
             )
 
         self.requests[api_key].append(current_time)

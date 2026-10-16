@@ -12,13 +12,9 @@ from app.usecases.generate_ai_response import GenerateAIResponseUseCase
 from app.usecases.get_message import GetMessageUseCase
 from app.usecases.get_messages import GetMessagesUseCase
 
-from .usecases import (
-    create_message_usecase,
-    delete_message_usecase,
-    generate_ai_response_usecase,
-    get_message_usecase,
-    get_messages_usecase,
-)
+from .usecases import (create_message_usecase, delete_message_usecase,
+                       generate_ai_response_usecase, get_message_usecase,
+                       get_messages_usecase)
 
 
 async def create_message_handler(

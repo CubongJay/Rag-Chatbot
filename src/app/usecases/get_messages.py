@@ -31,7 +31,10 @@ class GetMessagesUseCase:
         return self.message_repo.get_by_id(message_id)
 
     async def execute_by_session_id(
-        self, session_id: UUID, page: Optional[int] = None, size: Optional[int] = None
+        self,
+        session_id: UUID,
+        page: Optional[int] = None,
+        size: Optional[int] = None,
     ) -> List[Message]:
         """
         Retrieve all messages for a specific session with optional pagination.

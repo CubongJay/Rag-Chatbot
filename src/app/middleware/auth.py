@@ -26,7 +26,10 @@ class APIKeyAuth:
             return JSONResponse(
                 status_code=401,
                 content={
-                    "error": {"code": "UNAUTHORIZED", "message": "API key required"}
+                    "error": {
+                        "code": "UNAUTHORIZED",
+                        "message": "API key required",
+                    }
                 },
             )
 
@@ -35,7 +38,10 @@ class APIKeyAuth:
             return JSONResponse(
                 status_code=401,
                 content={
-                    "error": {"code": "UNAUTHORIZED", "message": "Invalid API key"}
+                    "error": {
+                        "code": "UNAUTHORIZED",
+                        "message": "Invalid API key",
+                    }
                 },
             )
 

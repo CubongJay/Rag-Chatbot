@@ -41,11 +41,9 @@ class OpenAIService(LLMService):
             )
 
         except Exception as e:
-                    raise ExternalServiceError(
-                        "OpenAI", f"Failed to initialize: {str(e)}"
-                    )
-
-  
+            raise ExternalServiceError(
+                "OpenAI", f"Failed to initialize: {str(e)}"
+            )
 
     async def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """Generate embeddings for a list of texts (async)."""
@@ -80,16 +78,16 @@ class OpenAIService(LLMService):
             ]
 
             if context:
-              
+
                 messages.append(
-                        SystemMessage(
-                            content=(
-                                "Answer the user's question using ONLY the following context. "
-                                "If the answer is not in the context, say you don't know.\n\n"
-                                f"Context:\n{context}"
-                            )
+                    SystemMessage(
+                        content=(
+                            "Answer the user's question using ONLY the following context. "
+                            "If the answer is not in the context, say you don't know.\n\n"
+                            f"Context:\n{context}"
                         )
                     )
+                )
 
             else:
                 messages.append(
@@ -115,25 +113,29 @@ class OpenAIService(LLMService):
 
             messages.append(HumanMessage(content=message))
 
-            response = await self.llm.ainvoke(messages,
-                                       config={"callbacks": [self.langfuse_handler]})
+            response = await self.llm.ainvoke(
+                messages, config={"callbacks": [self.langfuse_handler]}
+            )
             return response.content.strip()
 
         except Exception as e:
             raise ExternalServiceError(
                 "OpenAI", f"Failed to generate response: {str(e)}"
             )
+
     async def classify_query(self, user_message: str) -> str:
         try:
             messages = [
-                SystemMessage(content=(
-                    "You are a classifier. Categorize the user's message into one of two categories:\n\n"
-                    "- 'document': the message asks about facts, topics, or content that might be in an uploaded document. "
-                    "Examples: 'What is X?', 'How many Y?', 'Explain Z.'\n"
-                    "- 'conversational': greetings, thanks, meta-questions about the conversation, or anything that doesn't need document lookup. "
-                    "Examples: 'Hello', 'Thanks', 'What did you just say?'\n\n"
-                    "Respond with exactly one word: 'document' or 'conversational'."
-                )),
+                SystemMessage(
+                    content=(
+                        "You are a classifier. Categorize the user's message into one of two categories:\n\n"
+                        "- 'document': the message asks about facts, topics, or content that might be in an uploaded document. "
+                        "Examples: 'What is X?', 'How many Y?', 'Explain Z.'\n"
+                        "- 'conversational': greetings, thanks, meta-questions about the conversation, or anything that doesn't need document lookup. "
+                        "Examples: 'Hello', 'Thanks', 'What did you just say?'\n\n"
+                        "Respond with exactly one word: 'document' or 'conversational'."
+                    )
+                ),
                 HumanMessage(content=user_message),
             ]
 
@@ -151,16 +153,19 @@ class OpenAIService(LLMService):
             raise ExternalServiceError(
                 "OpenAI", f"Failed to classify query: {str(e)}"
             )
+
     async def summarize_document(self, document_content: str) -> str:
         try:
             messages = [
-                SystemMessage(content=(
-                    "You are a helpful assistant. "
-                    "Summarize the document content into 2-4 sentences "
-                    "that accurately describe what the document is about. "
-                    "Include key entities such as names, dates, amounts, "
-                    "and topics covered."
-                )),
+                SystemMessage(
+                    content=(
+                        "You are a helpful assistant. "
+                        "Summarize the document content into 2-4 sentences "
+                        "that accurately describe what the document is about. "
+                        "Include key entities such as names, dates, amounts, "
+                        "and topics covered."
+                    )
+                ),
                 HumanMessage(content=document_content),
             ]
 
@@ -174,5 +179,3 @@ class OpenAIService(LLMService):
             raise ExternalServiceError(
                 "OpenAI", f"Failed to summarize the document: {str(e)}"
             )
-
-            

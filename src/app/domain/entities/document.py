@@ -1,10 +1,9 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Dict, Optional
 from uuid import UUID
-from datetime import datetime
 
 from app.infrastructure.db.models import DocumentStatus
-
 
 
 @dataclass

@@ -3,12 +3,10 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
 
-from app.api.dependencies.message.handlers import (
-    CreateMessageHandler,
-    DeleteMessageHandler,
-    GetMessageHandler,
-    GetMessagesHandler,
-)
+from app.api.dependencies.message.handlers import (CreateMessageHandler,
+                                                   DeleteMessageHandler,
+                                                   GetMessageHandler,
+                                                   GetMessagesHandler)
 from app.schemas.message.requests import MessageCreateRequest
 from app.schemas.message.responses import MessagePairResponse, MessageResponse
 from app.schemas.pagination import PaginatedResponse
@@ -33,7 +31,8 @@ async def create_message(
 
 
 @router.get(
-    "/{session_id}/messages/", response_model=PaginatedResponse[MessageResponse]
+    "/{session_id}/messages/",
+    response_model=PaginatedResponse[MessageResponse],
 )
 async def get_messages(
     session_id: UUID,
@@ -46,7 +45,9 @@ async def get_messages(
     return await get_messages_handler(session_id, page, size)
 
 
-@router.get("/{session_id}/messages/{message_id}/", response_model=MessageResponse)
+@router.get(
+    "/{session_id}/messages/{message_id}/", response_model=MessageResponse
+)
 async def get_message(
     session_id: UUID,
     message_id: UUID,
@@ -58,7 +59,8 @@ async def get_message(
 
 
 @router.delete(
-    "/{session_id}/messages/{message_id}/", status_code=status.HTTP_204_NO_CONTENT
+    "/{session_id}/messages/{message_id}/",
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_message(
     session_id: UUID,

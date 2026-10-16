@@ -3,23 +3,24 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
 
-from app.api.dependencies.session.handlers import (
-    CreateSessionHandler,
-    DeleteSessionHandler,
-    GetSessionHandler,
-    GetSessionsHandler,
-    UpdateSessionHandler,
-)
+from app.api.dependencies.session.handlers import (CreateSessionHandler,
+                                                   DeleteSessionHandler,
+                                                   GetSessionHandler,
+                                                   GetSessionsHandler,
+                                                   UpdateSessionHandler)
 from app.schemas.pagination import PaginatedResponse
 from app.schemas.session.requests import SessionCreate, SessionUpdate
-from app.schemas.session.responses import SessionCreateResponse, SessionResponse
+from app.schemas.session.responses import (SessionCreateResponse,
+                                           SessionResponse)
 from app.security.auth import verify_api_key
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
 
 @router.post(
-    "/", status_code=status.HTTP_201_CREATED, response_model=SessionCreateResponse
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    response_model=SessionCreateResponse,
 )
 async def create_session(
     session_in: SessionCreate,
@@ -38,10 +39,14 @@ async def get_sessions(
     sessions_handler: GetSessionsHandler,
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
-    is_favorite: Optional[bool] = Query(None, description="Filter by favorite status"),
+    is_favorite: Optional[bool] = Query(
+        None, description="Filter by favorite status"
+    ),
     api_key: str = Depends(verify_api_key),
 ):
-    return await sessions_handler(page=page, size=size, is_favorite=is_favorite)
+    return await sessions_handler(
+        page=page, size=size, is_favorite=is_favorite
+    )
 
 
 @router.get("/{session_id}/", response_model=SessionResponse)

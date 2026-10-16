@@ -56,7 +56,10 @@ class DbSessionRepository(SessionRepository):
         return [self._to_domain_entity(session) for session in db_sessions]
 
     async def get_by_favorite(
-        self, is_favorite: bool, page: Optional[int] = None, size: Optional[int] = None
+        self,
+        is_favorite: bool,
+        page: Optional[int] = None,
+        size: Optional[int] = None,
     ) -> List[Session]:
         """Retrieve sessions filtered by favorite status."""
 
@@ -108,7 +111,9 @@ class DbSessionRepository(SessionRepository):
             await self.db_session.delete(db_session)
             await self.db_session.commit()
 
-    async def get_sessions_count(self, is_favorite: Optional[bool] = None) -> int:
+    async def get_sessions_count(
+        self, is_favorite: Optional[bool] = None
+    ) -> int:
         """Get total count of sessions."""
         query = select(ChatSession)
         if is_favorite:
@@ -124,5 +129,5 @@ class DbSessionRepository(SessionRepository):
             title=db_session.title,
             is_favorite=db_session.is_favorite,
             created_at=db_session.created_at,
-            updated_at=db_session.updated_at
+            updated_at=db_session.updated_at,
         )

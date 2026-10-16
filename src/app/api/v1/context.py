@@ -27,6 +27,9 @@
 #     #     api_key=settings.openai_api_key,
 #     # )
 
+import os
+from uuid import UUID
+
 #     open_ai_embeddings = OpenAIEmbeddings(
 #         model="text-embedding-3-small",
 #         openai_api_key=settings.openai_api_key,
@@ -36,33 +39,32 @@
 #     query_vector = open_ai_embeddings.embed_query(query_text)
 #     results = collection.query(query_embeddings=[query_vector], n_results=2)
 #     return {"results": results}
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, status
-from uuid import UUID
-import os
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 
-from app.api.dependencies.rag_context.handlers import UploadDocumentHandler, GetDocumentStatusHandler
+from app.api.dependencies.rag_context.handlers import (
+    GetDocumentStatusHandler, UploadDocumentHandler)
 from app.config.settings import get_settings
 
 # router = APIRouter()
 
 router = APIRouter(prefix="/rag-context", tags=["rag-context"])
 settings = get_settings()
+
+
 @router.post("/documents/upload", status_code=status.HTTP_201_CREATED)
 async def upload_document(
     handler: UploadDocumentHandler,
     session_id: UUID,
     file: UploadFile = File(...),
-   
 ):
     allowed = {".txt", ".pdf"}
     ext = os.path.splitext(file.filename)[1].lower()
     if ext not in allowed:
         raise HTTPException(400, f"Only {', '.join(allowed)} files supported")
 
-  
     try:
         # text = content.decode("utf-8")
-          content = await file.read()
+        content = await file.read()
     except UnicodeDecodeError:
         raise HTTPException(400, "File must be valid UTF-8 text")
 
@@ -71,7 +73,6 @@ async def upload_document(
 
 @router.get("/documents/status/{document_id}", status_code=status.HTTP_200_OK)
 async def get_document_status(
-    document_id: UUID,
-    handler: GetDocumentStatusHandler 
+    document_id: UUID, handler: GetDocumentStatusHandler
 ):
     return await handler(document_id)

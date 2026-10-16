@@ -2,16 +2,18 @@ import logging
 from typing import Any, Dict
 
 from fastapi import HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
-from fastapi.exceptions import RequestValidationError
 
 from app.errors.errors import BaseAPIException, ValidationError
 
 logger = logging.getLogger(__name__)
 
 
-async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+async def global_exception_handler(
+    request: Request, exc: Exception
+) -> JSONResponse:
     """Global exception handler for all unhandled exceptions."""
 
     if isinstance(exc, BaseAPIException):

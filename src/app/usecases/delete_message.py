@@ -53,5 +53,7 @@ class DeleteMessageUseCase:
         message_count = await self.message_repo.count_by_session_id(session_id)
         await self.message_repo.delete_by_session_id(session_id)
 
-        logger.info(f"Deleted {message_count} messages from session: ID={session_id}")
+        logger.info(
+            f"Deleted {message_count} messages from session: ID={session_id}"
+        )
         return message_count

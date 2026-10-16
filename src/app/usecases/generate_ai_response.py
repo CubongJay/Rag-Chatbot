@@ -6,10 +6,11 @@ from langfuse.langchain import CallbackHandler
 
 from app.config.settings import get_settings
 from app.domain.entities.message import Message, MessageType
+from app.domain.interfaces.document_chunk_repository import \
+    DocumentChunkRepository
 from app.domain.interfaces.llm_service import LLMService
 from app.domain.interfaces.message_repository import MessageRepository
 from app.domain.interfaces.session_repository import SessionRepository
-from app.domain.interfaces.document_chunk_repository import DocumentChunkRepository
 
 logger = logging.getLogger(__name__)
 
@@ -25,13 +26,11 @@ class GenerateAIResponseUseCase:
         session_repo: SessionRepository,
         llm_service: LLMService,
         document_repo: DocumentChunkRepository,
-   
-
     ) -> None:
         self.message_repo = message_repo
         self.session_repo = session_repo
         self.llm_service = llm_service
-   
+
         self.document_repo = document_repo
         self.langfuse = get_client()
         self.langfuse_handler = CallbackHandler()
@@ -70,54 +69,52 @@ class GenerateAIResponseUseCase:
                 }
                 for msg in history_messages[-10:]
             ]
-        
 
             with self.langfuse.start_as_current_observation(
                 name="classify_query",
                 input=user_message_content,
-                as_type="span"
-
+                as_type="span",
             ) as span:
-                
-                query_classification = await self.llm_service.classify_query(user_message_content)
-                span.update(
-                                        output=query_classification
-                
-                                    )
+
+                query_classification = await self.llm_service.classify_query(
+                    user_message_content
+                )
+                span.update(output=query_classification)
             if query_classification == "document":
 
                 embedded_message = await self.llm_service.embed_query(
-                        user_message_content
-                    )
-
+                    user_message_content
+                )
 
                 with self.langfuse.start_as_current_observation(
-                        name="retrieve_chunks",
-                        input=user_message_content,
-                        as_type="retriever",
-                    ) as retrieved_span:
-                        retrieved_docs = await self.document_repo.retrieve_similar_chunks(
+                    name="retrieve_chunks",
+                    input=user_message_content,
+                    as_type="retriever",
+                ) as retrieved_span:
+                    retrieved_docs = (
+                        await self.document_repo.retrieve_similar_chunks(
                             session_id=session_id,
                             query_embedding=embedded_message,
                             k=3,
                         )
-                        retrieved_span.update(
-                            output=[c.content for c in retrieved_docs],
-                            metadata={"chunks_found": len(retrieved_docs)},
-                        )
+                    )
+                    retrieved_span.update(
+                        output=[c.content for c in retrieved_docs],
+                        metadata={"chunks_found": len(retrieved_docs)},
+                    )
 
-                combined_context =  "\n\n".join(c.content for c in retrieved_docs)
+                combined_context = "\n\n".join(
+                    c.content for c in retrieved_docs
+                )
                 ai_response_content = await self.llm_service.generate_response(
-                        user_message_content,
-                        conversation_history,
-                        context=combined_context,
-                    )
+                    user_message_content,
+                    conversation_history,
+                    context=combined_context,
+                )
             else:
-                    ai_response_content = await self.llm_service.generate_response(
-                        user_message_content,
-                        conversation_history
-                    )
-                
+                ai_response_content = await self.llm_service.generate_response(
+                    user_message_content, conversation_history
+                )
 
             ai_message = Message(session_id=session_id)
             ai_message.set_sender("assistant")

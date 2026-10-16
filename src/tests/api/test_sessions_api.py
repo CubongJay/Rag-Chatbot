@@ -1,7 +1,7 @@
 import os
 import sys
 from datetime import datetime
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 from uuid import uuid4
 
 import pytest
@@ -27,6 +27,8 @@ with patch.dict(
     sys.modules["langchain_core.messages"] = Mock()
     sys.modules["langchain_openai"] = Mock()
     sys.modules["langchain_openai.chat_models"] = Mock()
+    sys.modules["langfuse"] = Mock()
+    sys.modules["langfuse.langchain"] = Mock()
 
     from app.main import app
     from app.schemas.pagination import PaginatedResponse, PaginationMeta

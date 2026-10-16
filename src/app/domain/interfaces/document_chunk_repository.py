@@ -25,10 +25,14 @@ class DocumentChunkRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_chunks_by_document_id(self, document_id: UUID) -> List[DocumentChunk]:
+    async def get_chunks_by_document_id(
+        self, document_id: UUID
+    ) -> List[DocumentChunk]:
         """Retrieve all chunks for a document."""
         pass
 
     @abstractmethod
-    async def retrieve_similar_chunks(self, session_id: UUID, query_embedding: List[float], k: int = 5) -> List[DocumentChunk]:
+    async def retrieve_similar_chunks(
+        self, session_id: UUID, query_embedding: List[float], k: int = 5
+    ) -> List[DocumentChunk]:
         pass

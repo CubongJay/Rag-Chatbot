@@ -27,12 +27,16 @@ class TestCreateSession:
     @pytest.mark.asyncio
     async def test_creates_favorite_session(self):
         session_repo = AsyncMock()
-        mock_session = Mock(id=uuid4(), title="Important Chat", is_favorite=True)
+        mock_session = Mock(
+            id=uuid4(), title="Important Chat", is_favorite=True
+        )
         session_repo.save.return_value = mock_session
 
         use_case = CreateSessionUseCase(session_repo)
 
-        result = await use_case.execute(title="Important Chat", is_favorite=True)
+        result = await use_case.execute(
+            title="Important Chat", is_favorite=True
+        )
 
         session_repo.save.assert_called_once()
         assert result.title == "Important Chat"
@@ -41,7 +45,9 @@ class TestCreateSession:
     @pytest.mark.asyncio
     async def test_creates_session_with_default_values(self):
         session_repo = AsyncMock()
-        mock_session = Mock(id=uuid4(), title="Default Chat", is_favorite=False)
+        mock_session = Mock(
+            id=uuid4(), title="Default Chat", is_favorite=False
+        )
         session_repo.save.return_value = mock_session
 
         use_case = CreateSessionUseCase(session_repo)

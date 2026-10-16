@@ -14,7 +14,9 @@ class TestGetSession:
     async def test_retrieves_session_by_id_successfully(self):
         session_repo = AsyncMock()
         session_id = uuid4()
-        mock_session = Mock(id=session_id, title="Test Chat", is_favorite=False)
+        mock_session = Mock(
+            id=session_id, title="Test Chat", is_favorite=False
+        )
         session_repo.get_by_id.return_value = mock_session
 
         use_case = GetSessionUseCase(session_repo)

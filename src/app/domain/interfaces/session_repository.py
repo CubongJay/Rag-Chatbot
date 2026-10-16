@@ -25,7 +25,10 @@ class SessionRepository(ABC):
 
     @abstractmethod
     async def get_by_favorite(
-        self, is_favorite: bool, page: Optional[int] = None, size: Optional[int] = None
+        self,
+        is_favorite: bool,
+        page: Optional[int] = None,
+        size: Optional[int] = None,
     ) -> List[Session]:
         """Retrieve sessions filtered by favorite status."""
         pass

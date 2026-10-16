@@ -31,7 +31,10 @@ class UploadDocumentUseCase:
         safe_name = f"{document_id}_{file_name}"
         file_path = os.path.join(UPLOAD_DIR, safe_name)
 
-        with open(file_path, "wb", ) as f:
+        with open(
+            file_path,
+            "wb",
+        ) as f:
             f.write(file_content)
 
         document = DocumentRecord(

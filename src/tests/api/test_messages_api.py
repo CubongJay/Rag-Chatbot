@@ -28,6 +28,8 @@ with patch.dict(
     sys.modules["langchain_core.messages"] = Mock()
     sys.modules["langchain_openai"] = Mock()
     sys.modules["langchain_openai.chat_models"] = Mock()
+    sys.modules["langfuse"] = Mock()
+    sys.modules["langfuse.langchain"] = Mock()
 
     from app.domain.entities.message import Message, MessageType
     from app.main import app
@@ -81,7 +83,11 @@ class TestMessagesAPISimple:
 
             response = client.post(
                 f"/sessions/{session_id}/messages/",
-                json={"content": "Hello", "sender": "user", "message_type": "user"},
+                json={
+                    "content": "Hello",
+                    "sender": "user",
+                    "message_type": "user",
+                },
                 headers={"X-API-Key": "test-key"},
             )
 

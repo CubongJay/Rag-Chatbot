@@ -6,20 +6,17 @@ from fastapi import Depends
 from app.errors.errors import SessionNotFoundError
 from app.schemas.pagination import PaginatedResponse, PaginationMeta
 from app.schemas.session.requests import SessionUpdate
-from app.schemas.session.responses import SessionCreateResponse, SessionResponse
+from app.schemas.session.responses import (SessionCreateResponse,
+                                           SessionResponse)
 from app.usecases.create_session import CreateSessionUseCase
 from app.usecases.delete_session import DeleteSessionUseCase
 from app.usecases.get_session import GetSessionUseCase
 from app.usecases.get_sessions import GetSessionsUseCase
 from app.usecases.update_session import UpdateSessionUseCase
 
-from .usecases import (
-    create_session_usecase,
-    delete_session_usecase,
-    get_session_usecase,
-    get_sessions_usecase,
-    update_session_usecase,
-)
+from .usecases import (create_session_usecase, delete_session_usecase,
+                       get_session_usecase, get_sessions_usecase,
+                       update_session_usecase)
 
 
 async def create_session_handler(
@@ -27,8 +24,12 @@ async def create_session_handler(
 ) -> Callable[[str, bool], SessionCreateResponse]:
     """Dependency provider that returns a handler function."""
 
-    async def handler(title: str, is_favorite: bool = False) -> SessionCreateResponse:
-        new_session = await use_case.execute(title=title, is_favorite=is_favorite)
+    async def handler(
+        title: str, is_favorite: bool = False
+    ) -> SessionCreateResponse:
+        new_session = await use_case.execute(
+            title=title, is_favorite=is_favorite
+        )
 
         return SessionCreateResponse(
             session_id=new_session.id,
@@ -140,7 +141,8 @@ async def update_session_handler(
 
 
 CreateSessionHandler = Annotated[
-    Callable[[str, bool], SessionCreateResponse], Depends(create_session_handler)
+    Callable[[str, bool], SessionCreateResponse],
+    Depends(create_session_handler),
 ]
 GetSessionsHandler = Annotated[
     Callable[[int, int, Optional[bool]], PaginatedResponse[SessionResponse]],
@@ -153,5 +155,6 @@ DeleteSessionHandler = Annotated[
     Callable[[UUID], None], Depends(delete_session_handler)
 ]
 UpdateSessionHandler = Annotated[
-    Callable[[UUID, SessionUpdate], SessionResponse], Depends(update_session_handler)
+    Callable[[UUID, SessionUpdate], SessionResponse],
+    Depends(update_session_handler),
 ]

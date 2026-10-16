@@ -1,11 +1,12 @@
 from typing import List
 from uuid import UUID
 
-from sqlalchemy import select, delete
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.entities.document import DocumentChunk
-from app.domain.interfaces.document_chunk_repository import DocumentChunkRepository
+from app.domain.interfaces.document_chunk_repository import \
+    DocumentChunkRepository
 from app.infrastructure.db.models import DocumentChunk as DocumentChunkModel
 
 
@@ -47,7 +48,9 @@ class DbDocumentChunkRepository(DocumentChunkRepository):
         await self.db_session.execute(stmt)
         await self.db_session.commit()
 
-    async def get_chunks_by_document_id(self, document_id: UUID) -> List[DocumentChunk]:
+    async def get_chunks_by_document_id(
+        self, document_id: UUID
+    ) -> List[DocumentChunk]:
         stmt = (
             select(DocumentChunkModel)
             .where(DocumentChunkModel.document_id == document_id)
@@ -57,11 +60,15 @@ class DbDocumentChunkRepository(DocumentChunkRepository):
         db_chunks = result.scalars().all()
         return [self._to_domain_entity(c) for c in db_chunks]
 
-    async def retrieve_similar_chunks(self, session_id: UUID, query_embedding: List[float], k: int = 5) -> List[DocumentChunk]:
+    async def retrieve_similar_chunks(
+        self, session_id: UUID, query_embedding: List[float], k: int = 5
+    ) -> List[DocumentChunk]:
         stmt = (
             select(DocumentChunkModel)
             .where(DocumentChunkModel.session_id == session_id)
-            .order_by(DocumentChunkModel.embedding.l2_distance(query_embedding))
+            .order_by(
+                DocumentChunkModel.embedding.l2_distance(query_embedding)
+            )
             .limit(k)
         )
         result = await self.db_session.execute(stmt)

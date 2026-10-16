@@ -26,7 +26,9 @@ class TestGetSessions:
         total_count = await use_case.execute_count()
 
         session_repo.get_all.assert_called_once_with(page=1, size=10)
-        session_repo.get_sessions_count.assert_called_once_with(is_favorite=None)
+        session_repo.get_sessions_count.assert_called_once_with(
+            is_favorite=None
+        )
         assert len(sessions) == 2
         assert total_count == 2
 
@@ -45,7 +47,9 @@ class TestGetSessions:
         session_repo.get_by_favorite.assert_called_once_with(
             is_favorite=True, page=1, size=5
         )
-        session_repo.get_sessions_count.assert_called_once_with(is_favorite=True)
+        session_repo.get_sessions_count.assert_called_once_with(
+            is_favorite=True
+        )
         assert len(sessions) == 1
         assert total_count == 1
 
@@ -62,6 +66,8 @@ class TestGetSessions:
         total_count = await use_case.execute_count()
 
         session_repo.get_all.assert_called_once_with(page=None, size=None)
-        session_repo.get_sessions_count.assert_called_once_with(is_favorite=None)
+        session_repo.get_sessions_count.assert_called_once_with(
+            is_favorite=None
+        )
         assert len(sessions) == 1
         assert total_count == 1
