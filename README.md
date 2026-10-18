@@ -2,6 +2,30 @@
 
 A session-isolated Retrieval-Augmented Generation (RAG) backend. Upload documents, ask questions, get answers grounded in your files — with full observability via Langfuse.
 
+[![Backend CI](https://github.com/CubongJay/Rag-Chatbot/actions/workflows/backend.yml/badge.svg)](https://github.com/CubongJay/Rag-Chatbot/actions/workflows/backend.yml)
+
+## Cloud Deployment & CI/CD
+
+This application is fully containerized and designed for production deployment on **Microsoft Azure**.
+
+> **Note:** The live cloud environment has been deprovisioned to prevent unnecessary billing. However, the complete infrastructure and deployment pipeline are fully automated via GitHub Actions. 
+
+### Deployment Architecture
+- **Compute:** Azure Container Apps (Serverless, auto-scaling)
+- **Database:** Azure Database for PostgreSQL Flexible Server (with pgvector)
+- **Image Registry:** Azure Container Registry (ACR)
+- **Secrets Management:** Azure Key Vault (injected at runtime via Managed Identity)
+- **Frontend:** React / TypeScript (Deployed separately)
+
+### CI/CD Pipeline (GitHub Actions)
+Every push to the `master` branch triggers an automated pipeline that:
+1. Runs `isort` and `black` for code quality.
+2. Runs the `pytest` suite.
+3. Authenticates to Azure securely using **OIDC (OpenID Connect)** — no long-lived passwords are stored in GitHub.
+4. Builds the Docker image and pushes it to ACR.
+5. Deploys the new revision to Azure Container Apps.
+
+To redeploy the infrastructure from scratch, simply recreate the Azure resources, attach the OIDC federated credential, and push to `master`.
 ## Features
 
 - **Document ingestion**: Upload `.txt` and `.pdf` files
