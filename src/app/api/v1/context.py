@@ -9,7 +9,6 @@ from app.api.dependencies.rag_context.handlers import (
 )
 from app.config.settings import get_settings
 
-
 router = APIRouter(prefix="/rag-context", tags=["rag-context"])
 settings = get_settings()
 
@@ -26,7 +25,7 @@ async def upload_document(
         raise HTTPException(400, f"Only {', '.join(allowed)} files supported")
 
     try:
-       
+
         content = await file.read()
     except UnicodeDecodeError:
         raise HTTPException(400, "File must be valid UTF-8 text")
