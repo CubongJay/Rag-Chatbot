@@ -1,9 +1,9 @@
 from typing import List, Optional
 
+from langchain_azure_ai.chat_models import AzureAIChatCompletionsModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langfuse.langchain import CallbackHandler
-from langchain_azure_ai.chat_models import AzureAIChatCompletionsModel
 
 from app.config.settings import get_settings
 from app.domain.interfaces.llm_service import LLMService
@@ -24,11 +24,11 @@ class OpenAIService(LLMService):
         self.langfuse_handler = CallbackHandler()
 
         try:
-  
+
             self.llm = AzureAIChatCompletionsModel(
                 endpoint=settings.azure_inference_url,
                 credential=settings.azure_inference_credential,
-                model="gpt-4.1-mini"
+                model="gpt-4.1-mini",
             )
         except Exception as e:
             raise ExternalServiceError(
