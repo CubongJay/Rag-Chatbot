@@ -12,6 +12,7 @@ dependencies = [
     "fastapi>=0.119.1",
     "httpx>=0.28.1",
     "langchain>=0.1.0",
+    "langchain-azure-ai>=1.2.12",
     "langchain-core>=0.1.0",
     "langchain-openai>=0.0.5",
     "langfuse>=4.15.4",

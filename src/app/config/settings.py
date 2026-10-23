@@ -63,7 +63,12 @@ class Settings(BaseSettings):
     llm_max_tokens: int = Field(
         default=1000, json_schema_extra={"env": "LLM_MAX_TOKENS"}
     )
-
+    azure_inference_url: str = Field(...,
+        json_schema_extra={"env": "AZURE_INFERENCE_URL"}
+    )
+    azure_inference_credential: str = Field(...,
+            json_schema_extra={"env": "AZURE_INFERENCE_CREDENTIAL"}
+        )
     model_config = {
         "env_file": ".env",
         "env_file_encoding": "utf-8",
