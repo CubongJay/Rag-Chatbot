@@ -21,6 +21,8 @@ with patch.dict(
         "API_KEY": "test-key",
         "ENCRYPTION_KEY": "tLKcezNbbYKFOZdB_yt1GBwiVLJqz2jQ6JxIURtGSnI=",
         "OPENAI_API_KEY": "test-openai-key",
+        "AZURE_INFERENCE_URL": "test-azure-url",
+        "AZURE_INFERENCE_CREDENTIAL": "test-azure-credential",
     },
 ):
     sys.modules["langchain_core"] = Mock()
