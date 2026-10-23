@@ -1,3 +1,5 @@
+
+```markdown
 # RAG Chatbot
 
 A session-isolated Retrieval-Augmented Generation (RAG) backend. Upload documents, ask questions, get answers grounded in your files — with full observability via Langfuse.
@@ -8,13 +10,14 @@ A session-isolated Retrieval-Augmented Generation (RAG) backend. Upload document
 
 This application is fully containerized and designed for production deployment on **Microsoft Azure**.
 
-> **Note:** The live cloud environment has been deprovisioned to prevent unnecessary billing. However, the complete infrastructure and deployment pipeline are fully automated via GitHub Actions. 
+> **Note:** The live cloud environment has been deprovisioned to prevent unnecessary billing. However, the complete infrastructure and deployment pipeline are fully automated via GitHub Actions.
 
 ### Deployment Architecture
 - **Compute:** Azure Container Apps (Serverless, auto-scaling)
 - **Database:** Azure Database for PostgreSQL Flexible Server (with pgvector)
 - **Image Registry:** Azure Container Registry (ACR)
 - **Secrets Management:** Azure Key Vault (injected at runtime via Managed Identity)
+- **LLM Provider:** Azure AI Foundry (via LangChain)
 - **Frontend:** React / TypeScript (Deployed separately)
 
 ### CI/CD Pipeline (GitHub Actions)
@@ -26,6 +29,7 @@ Every push to the `master` branch triggers an automated pipeline that:
 5. Deploys the new revision to Azure Container Apps.
 
 To redeploy the infrastructure from scratch, simply recreate the Azure resources, attach the OIDC federated credential, and push to `master`.
+
 ## Features
 
 - **Document ingestion**: Upload `.txt` and `.pdf` files
@@ -41,9 +45,9 @@ To redeploy the infrastructure from scratch, simply recreate the Azure resources
 | Layer | Tech |
 |-------|------|
 | API | FastAPI (async) |
-| Database | PostgreSQL 15 + pgvector |
+| Database | PostgreSQL 16 + pgvector |
 | Embeddings | OpenAI `text-embedding-3-small` |
-| LLM | OpenAI GPT-4o-mini via LangChain |
+| LLM | Azure AI Foundry (via LangChain) |
 | Observability | Langfuse Cloud |
 | Migrations | Alembic |
 | Package manager | uv |
@@ -68,7 +72,8 @@ Clean Architecture — dependencies point inward:
 │  Interfaces: DocumentRepository, LLMService │
 ├─────────────────────────────────────────────┤
 │          Infrastructure Layer               │
-│  SQLAlchemy repos, OpenAI service, pgvector │
+│  SQLAlchemy repos, Azure LLM service        │
+│  pgvector                                   │
 └─────────────────────────────────────────────┘
 ```
 
@@ -96,7 +101,7 @@ Chat → embed query
 ### Prerequisites
 
 - Docker and Docker Compose
-- OpenAI API key
+- Azure AI Foundry endpoint and credential (or OpenAI API key)
 - (Optional) Langfuse Cloud account for observability
 
 ### Quick Start
@@ -111,7 +116,7 @@ Chat → embed query
    ```bash
    cp .env.example .env
    ```
-   Fill in `OPENAI_API_KEY` and Langfuse keys.
+   Fill in `AZURE_INFERENCE_ENDPOINT`, `AZURE_INFERENCE_CREDENTIAL`, and Langfuse keys.
 
 3. Start services:
    ```bash
@@ -181,11 +186,13 @@ curl -X POST http://localhost:8000/sessions/<session_id>/messages/ \
 | **Session-scoped chunks** | Denormalized `session_id` on `document_chunks` — avoids JOIN on hot retrieval path |
 | **Async throughout** | `aembed_documents`, async SQLAlchemy sessions, non-blocking LLM calls |
 | **Langfuse Cloud** | Full observability without local infra — traces retrieval + LLM in one place |
+| **Azure AI Foundry** | Abstracted LLM provider via `LLMService` interface — migrated from OpenAI to Azure without changing a single use case or domain entity. |
+| **OIDC over Client Secrets** | GitHub Actions authenticates to Azure using short-lived federated credentials. No long-lived passwords are stored in GitHub. |
 
 ## Testing
 
 ```bash
-docker compose exec web pytest src/tests/
+uv run pytest
 ```
 
 ## API Docs
@@ -193,4 +200,4 @@ docker compose exec web pytest src/tests/
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 - Langfuse traces: https://cloud.langfuse.com
-
+```
