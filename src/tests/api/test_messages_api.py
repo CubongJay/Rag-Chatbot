@@ -28,6 +28,7 @@ with patch.dict(
     sys.modules["langchain_core.messages"] = Mock()
     sys.modules["langchain_openai"] = Mock()
     sys.modules["langchain_openai.chat_models"] = Mock()
+    sys.modules["langchain_azure_ai.chat_models"] = Mock()
     sys.modules["langfuse"] = Mock()
     sys.modules["langfuse.langchain"] = Mock()
 
