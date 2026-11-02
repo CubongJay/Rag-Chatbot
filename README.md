@@ -109,7 +109,7 @@ flowchart TD
     Domain --> Infra
 ### RAG Flow
 
-```
+
 Upload → save file → PENDING record
          ↓ (background task)
        extract text (pypdf / plain read)
