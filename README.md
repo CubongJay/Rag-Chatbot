@@ -55,7 +55,7 @@ To redeploy the infrastructure from scratch, simply recreate the Azure resources
 
 ## Architecture
 
-Clean Architecture — dependencies point inward:
+<!-- Clean Architecture — dependencies point inward:
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -75,8 +75,38 @@ Clean Architecture — dependencies point inward:
 │  SQLAlchemy repos, Azure LLM service        │
 │  pgvector                                   │
 └─────────────────────────────────────────────┘
-```
+``` -->
+## Architecture
 
+Clean Architecture — dependencies point inward:
+
+```mermaid
+flowchart TD
+    subgraph API ["API Layer (FastAPI)"]
+        A1[endpoints] --> A2[handlers]
+        A2 --> A3[use cases]
+    end
+
+    subgraph UC ["Use Case Layer"]
+        U1[UploadDocumentUseCase]
+        U2[ProcessDocumentUseCase<br/>background task]
+        U3[GenerateAIResponseUseCase]
+    end
+
+    subgraph Domain ["Domain Layer"]
+        D1[Entities: Document, DocumentChunk]
+        D2[Interfaces: DocumentRepository, LLMService]
+    end
+
+    subgraph Infra ["Infrastructure Layer"]
+        I1[SQLAlchemy repos]
+        I2[Azure LLM service]
+        I3[pgvector]
+    end
+
+    API --> UC
+    UC --> Domain
+    Domain --> Infra
 ### RAG Flow
 
 ```
