@@ -53,6 +53,7 @@ To redeploy the infrastructure from scratch, simply recreate the Azure resources
 | Package manager | uv |
 | Container | Docker + Docker Compose |
 
+
 ## Architecture
 
 Clean Architecture — dependencies point inward:
@@ -85,6 +86,7 @@ flowchart TD
     UC --> Domain
     Domain --> Infra
 ```
+
 
 ### RAG Flow
 
