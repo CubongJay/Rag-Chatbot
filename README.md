@@ -87,6 +87,19 @@ flowchart TD
     API --> UC --> Domain --> Infra
 ```
 
+## Architecture
+
+Clean Architecture — dependencies point inward:
+
+```mermaid
+flowchart TD
+    API["<b>API Layer (FastAPI)</b><br/>endpoints → handlers → use cases"]
+    UC["<b>Use Case Layer</b><br/>UploadDocumentUseCase<br/>ProcessDocumentUseCase (background)<br/>GenerateAIResponseUseCase"]
+    Domain["<b>Domain Layer</b><br/>Entities: Document, DocumentChunk<br/>Interfaces: DocumentRepository, LLMService"]
+    Infra["<b>Infrastructure Layer</b><br/>SQLAlchemy repos • Azure LLM service • pgvector"]
+
+    API --> UC --> Domain --> Infra
+```
 
 
 ### RAG Flow
