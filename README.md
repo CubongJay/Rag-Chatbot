@@ -86,8 +86,6 @@ flowchart TD
     Domain --> Infra
 ```
 ### RAG Flow
-### RAG Flow
-
 ```mermaid
 flowchart LR
     subgraph Ingestion ["1. Document Ingestion"]
