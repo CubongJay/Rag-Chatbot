@@ -53,31 +53,26 @@ To redeploy the infrastructure from scratch, simply recreate the Azure resources
 | Package manager | uv |
 | Container | Docker + Docker Compose |
 
-
-## Architecture
-
-Clean Architecture — dependencies point inward:
-
 ## Architecture
 
 Clean Architecture — dependencies point inward:
 
 ```mermaid
 flowchart TD
-    subgraph API ["API Layer (FastAPI)"]
+    subgraph API ["API Layer - FastAPI"]
         A1["endpoints"] --> A2["handlers"]
         A2 --> A3["use cases"]
     end
 
     subgraph UC ["Use Case Layer"]
         U1["UploadDocumentUseCase"]
-        U2["ProcessDocumentUseCase (background task)"]
+        U2["ProcessDocumentUseCase - background task"]
         U3["GenerateAIResponseUseCase"]
     end
 
     subgraph Domain ["Domain Layer"]
-        D1["Entities: Document, DocumentChunk"]
-        D2["Interfaces: DocumentRepository, LLMService"]
+        D1["Entities - Document, DocumentChunk"]
+        D2["Interfaces - DocumentRepository, LLMService"]
     end
 
     subgraph Infra ["Infrastructure Layer"]
@@ -96,7 +91,6 @@ flowchart TD
     I2 -.-> D2
     I3 -.-> I1
 ```
-
 
 
 ### RAG Flow
