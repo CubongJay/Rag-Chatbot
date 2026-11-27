@@ -66,7 +66,7 @@ flowchart TD
 
     subgraph UC ["Use Case Layer"]
         U1[UploadDocumentUseCase]
-        U2["ProcessDocumentUseCase<br/>background task"]
+        U2["ProcessDocumentUseCase (background task)"]
         U3[GenerateAIResponseUseCase]
     end
 
