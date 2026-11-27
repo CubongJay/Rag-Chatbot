@@ -55,29 +55,6 @@ To redeploy the infrastructure from scratch, simply recreate the Azure resources
 
 ## Architecture
 
-<!-- Clean Architecture — dependencies point inward:
-
-```
-┌─────────────────────────────────────────────┐
-│              API Layer (FastAPI)            │
-│  endpoints → handlers → use cases           │
-├─────────────────────────────────────────────┤
-│            Use Case Layer                   │
-│  UploadDocumentUseCase                      │
-│  ProcessDocumentUseCase (background)        │
-│  GenerateAIResponseUseCase                  │
-├─────────────────────────────────────────────┤
-│            Domain Layer                     │
-│  Entities: Document, DocumentChunk          │
-│  Interfaces: DocumentRepository, LLMService │
-├─────────────────────────────────────────────┤
-│          Infrastructure Layer               │
-│  SQLAlchemy repos, Azure LLM service        │
-│  pgvector                                   │
-└─────────────────────────────────────────────┘
-``` -->
-## Architecture
-
 Clean Architecture — dependencies point inward:
 
 ```mermaid
@@ -107,24 +84,27 @@ flowchart TD
     API --> UC
     UC --> Domain
     Domain --> Infra
+```
+### RAG Flow
 ### RAG Flow
 
+```mermaid
+flowchart LR
+    subgraph Ingestion ["1. Document Ingestion"]
+        direction TB
+        S1["Upload → Save File → PENDING"] --> S2["Extract Text (pypdf / plain)"]
+        S2 --> S3["Chunk → Embed → Store in pgvector"]
+        S3 --> S4["SUCCESS (with chunk_count)"]
+    end
 
-Upload → save file → PENDING record
-         ↓ (background task)
-       extract text (pypdf / plain read)
-         ↓
-       chunk → embed → store in pgvector
-         ↓
-       SUCCESS with chunk_count
-
-Chat → embed query
-     ↓
-   retrieve top-k chunks (pgvector similarity, session-scoped)
-     ↓
-   inject into prompt → LLM → response
-     ↓ (traced via Langfuse)
+    subgraph Retrieval ["2. Chat Retrieval"]
+        direction TB
+        C1["Embed User Query"] --> C2["Retrieve Top-K Chunks (pgvector, session-scoped)"]
+        C2 --> C3["Inject into Prompt → LLM → Response"]
+        C3 --> C4["Traced via Langfuse"]
+    end
 ```
+
 
 ## Setup
 

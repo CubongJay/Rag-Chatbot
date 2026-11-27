@@ -7,3 +7,6 @@ __pycache__/
 .pytest_cache
 .python-version
 .idea
+.DS_STORE
+/terraform/terraform.tfvars
+/terraform/.terraform/
